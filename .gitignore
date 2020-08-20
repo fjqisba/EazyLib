@@ -18,6 +18,10 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+Debug MD/
+Debug MT/
+Release MD/
+Release MT/
 x64/
 x86/
 [Aa][Rr][Mm]/
