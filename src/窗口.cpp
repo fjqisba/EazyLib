@@ -33,16 +33,7 @@ std::string 窗口_取类名(HWND 窗口句柄)
 
 void 窗口_投递文本(HWND 窗口句柄, std::string& 文本内容)
 {
-	for (unsigned int n = 0; n < 文本内容.length(); n++)
-	{
-		PostMessageA(窗口句柄, WM_CHAR, 文本内容[n], 0);
-	}
-	return;
-}
-
-void 窗口_投递文本(HWND 窗口句柄, std::string 文本内容)
-{
-	for (unsigned int n = 0; n < 文本内容.length(); n++)
+	for (size_t n = 0; n < 文本内容.length(); n++)
 	{
 		PostMessageA(窗口句柄, WM_CHAR, 文本内容[n], 0);
 	}

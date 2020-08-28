@@ -275,9 +275,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\EazyLib.cpp" />
+    <ClCompile Include="src\字节集.cpp" />
+    <ClCompile Include="src\文本.cpp" />
     <ClCompile Include="src\窗口.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EazyLib.h" />
+    <ClInclude Include="include\字节集.h" />
+    <ClInclude Include="include\文本.h" />
     <ClInclude Include="include\窗口.h" />
   </ItemGroup>
   <ItemGroup>
