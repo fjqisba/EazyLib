@@ -59,3 +59,23 @@ std::string 字节集_字节集到十六进制(字节集& 原始字节集)
 	delete[] NewBuf;
 	return ret;
 }
+
+字节集 字节集_十六进制到字节集(std::string& 原始16进制文本)
+{
+	字节集 ret;
+	size_t Len = 原始16进制文本.length();
+	if (Len & 1)
+	{
+		return ret;
+	}
+
+	unsigned char* pBuf = new unsigned char[Len / 2];
+	for (unsigned int n = 0; n < Len / 2; n++)
+	{
+		pBuf[n] = StrToUchar(&原始16进制文本[2 * n]);
+	}
+	ret = 到字节集(pBuf, Len / 2);
+
+	delete[] pBuf;
+	return ret;
+}

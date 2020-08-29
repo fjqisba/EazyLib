@@ -18,4 +18,8 @@ public:
 //Buffer转字节集
 字节集 到字节集(char* pBuf, unsigned int BufLen);
 
+//将字节集用16进制文本表示
 std::string 字节集_字节集到十六进制(字节集& 原始字节集);
+
+//将一串十六进制文本还原为字节集
+字节集 字节集_十六进制到字节集(std::string& 原始16进制文本);
