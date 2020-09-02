@@ -1,9 +1,9 @@
 #include "字节集.h"
-#include "../EazyLib.h"
+#include "../public.h"
 
 字节集::字节集()
 {
-
+	
 }
 
 字节集::~字节集()
@@ -46,17 +46,14 @@ std::string 字节集_字节集到十六进制(字节集& 原始字节集)
 	}
 
 	std::string ret;
-	char* NewBuf = new char[BufLen * 2 + 1];
+	ret.resize(BufLen * 2 + 1, 0x0);
 	int Index = 0;
 	for (size_t n = 0; n < 原始字节集.size(); n++)
 	{
 		const char* pHex = UCharToStr(原始字节集[n]);
-		NewBuf[Index++] = pHex[0];
-		NewBuf[Index++] = pHex[1];
+		ret[Index++] = pHex[0];
+		ret[Index++] = pHex[1];
 	}
-	NewBuf[Index] = 0x0;
-	ret = NewBuf;
-	delete[] NewBuf;
 	return ret;
 }
 
@@ -69,13 +66,24 @@ std::string 字节集_字节集到十六进制(字节集& 原始字节集)
 		return ret;
 	}
 
-	unsigned char* pBuf = new unsigned char[Len / 2];
+	ret.resize(Len / 2);
 	for (unsigned int n = 0; n < Len / 2; n++)
 	{
-		pBuf[n] = StrToUchar(&原始16进制文本[2 * n]);
+		ret[n] = StrToUchar(&原始16进制文本[2 * n]);
 	}
-	ret = 到字节集(pBuf, Len / 2);
+	return ret;
+}
 
-	delete[] pBuf;
+
+字节集 到字节集(std::string& 欲转换为字节集的文本)
+{
+	字节集 ret;
+	size_t 文本长度 = 欲转换为字节集的文本.length();
+	if (!文本长度)
+	{
+		return ret;
+	}
+	ret.resize(文本长度);
+	memcpy(ret.data(), 欲转换为字节集的文本.c_str(), 文本长度);
 	return ret;
 }

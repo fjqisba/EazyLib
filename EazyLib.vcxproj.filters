@@ -27,6 +27,15 @@
     <ClCompile Include="src\EazyLib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\进程.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\public.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\内存.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\窗口.h">
@@ -38,7 +47,16 @@
     <ClInclude Include="include\字节集.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EazyLib.h">
+    <ClInclude Include="include\进程.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="public.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EazyLib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\内存.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

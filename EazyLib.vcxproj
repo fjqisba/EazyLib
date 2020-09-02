@@ -276,15 +276,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\EazyLib.cpp" />
+    <ClCompile Include="src\public.cpp" />
+    <ClCompile Include="src\内存.cpp" />
     <ClCompile Include="src\字节集.cpp" />
     <ClCompile Include="src\文本.cpp" />
     <ClCompile Include="src\窗口.cpp" />
+    <ClCompile Include="src\进程.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EazyLib.h" />
+    <ClInclude Include="include\EazyLib.h" />
+    <ClInclude Include="include\内存.h" />
     <ClInclude Include="include\字节集.h" />
     <ClInclude Include="include\文本.h" />
     <ClInclude Include="include\窗口.h" />
+    <ClInclude Include="include\进程.h" />
+    <ClInclude Include="public.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
