@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Crypto">
+      <UniqueIdentifier>{38a463b7-361a-4f66-968e-9afa2e28fd5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Crypto">
+      <UniqueIdentifier>{4d3cc470-bc95-4192-a0fb-278e623b92ef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\窗口.cpp">
@@ -36,6 +42,12 @@
     <ClCompile Include="src\内存.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\AES.cpp">
+      <Filter>源文件\Crypto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Padding.cpp">
+      <Filter>源文件\Crypto</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\窗口.h">
@@ -58,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="include\内存.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Padding.h">
+      <Filter>头文件\Crypto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

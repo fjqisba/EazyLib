@@ -1,6 +1,8 @@
 #include "字节集.h"
 #include "../public.h"
 
+#include <windows.h>
+
 字节集::字节集()
 {
 	
@@ -9,6 +11,11 @@
 字节集::~字节集()
 {
 
+}
+
+字节集::字节集(std::initializer_list<unsigned char> _Ilist):std::vector<unsigned char>(_Ilist)
+{
+	return;
 }
 
 字节集::字节集(unsigned char* pBuf, unsigned int BufLen)
@@ -21,6 +28,21 @@
 {
 	this->resize(BufLen);
 	memcpy(this->data(), pBuf, BufLen);
+}
+
+字节集 字节集::operator+(const 字节集& a)
+{
+	字节集 ret;
+	ret.reserve(this->size() + a.size());
+	if (this->size())
+	{
+		ret.insert(ret.end(), this->begin(), this->end());
+	}
+	if (a.size())
+	{
+		ret.insert(ret.end(), a.begin(), a.end());
+	}
+	return ret;
 }
 
 //————————————————————————————————————————————————————
@@ -36,6 +58,21 @@
 	字节集 ret(pBuf, BufLen);
 	return ret;
 }
+
+字节集 到字节集(std::string 欲转换为字节集的文本)
+{
+	字节集 ret;
+	size_t 文本长度 = 欲转换为字节集的文本.length();
+	if (!文本长度)
+	{
+		return ret;
+	}
+	ret.resize(文本长度);
+	memcpy(ret.data(), 欲转换为字节集的文本.c_str(), 文本长度);
+	return ret;
+}
+
+
 
 std::string 字节集_字节集到十六进制(字节集& 原始字节集)
 {
@@ -71,19 +108,5 @@ std::string 字节集_字节集到十六进制(字节集& 原始字节集)
 	{
 		ret[n] = StrToUchar(&原始16进制文本[2 * n]);
 	}
-	return ret;
-}
-
-
-字节集 到字节集(std::string& 欲转换为字节集的文本)
-{
-	字节集 ret;
-	size_t 文本长度 = 欲转换为字节集的文本.length();
-	if (!文本长度)
-	{
-		return ret;
-	}
-	ret.resize(文本长度);
-	memcpy(ret.data(), 欲转换为字节集的文本.c_str(), 文本长度);
 	return ret;
 }

@@ -47,6 +47,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MT|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -275,7 +276,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\AES.cpp" />
     <ClCompile Include="src\EazyLib.cpp" />
+    <ClCompile Include="src\Padding.cpp" />
     <ClCompile Include="src\public.cpp" />
     <ClCompile Include="src\内存.cpp" />
     <ClCompile Include="src\字节集.cpp" />
@@ -285,6 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\EazyLib.h" />
+    <ClInclude Include="include\Padding.h" />
     <ClInclude Include="include\内存.h" />
     <ClInclude Include="include\字节集.h" />
     <ClInclude Include="include\文本.h" />

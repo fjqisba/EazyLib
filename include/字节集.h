@@ -5,7 +5,9 @@
 class 字节集:public std::vector<unsigned char>
 {
 public:
+	字节集 operator+(const 字节集& a);
 	字节集();
+	字节集(std::initializer_list<unsigned char> _Ilist);
 	字节集(char* pBuf, unsigned int BufLen);
 	字节集(unsigned char* pBuf, unsigned int BufLen);
 	~字节集();
@@ -19,7 +21,7 @@ public:
 字节集 到字节集(char* pBuf, unsigned int BufLen);
 
 //文本转字节集
-字节集 到字节集(std::string& 欲转换为字节集的文本);
+字节集 到字节集(std::string 欲转换为字节集的文本);
 
 //将字节集用16进制文本表示
 std::string 字节集_字节集到十六进制(字节集& 原始字节集);
