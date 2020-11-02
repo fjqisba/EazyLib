@@ -75,9 +75,4 @@
       <Filter>头文件\Crypto</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt">
-      <Filter>头文件</Filter>
-    </Text>
-  </ItemGroup>
 </Project>

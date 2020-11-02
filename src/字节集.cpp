@@ -33,15 +33,17 @@
 字节集 字节集::operator+(const 字节集& a)
 {
 	字节集 ret;
-	ret.reserve(this->size() + a.size());
+	ret.resize(this->size() + a.size(), 0x0);
+
 	if (this->size())
 	{
-		ret.insert(ret.end(), this->begin(), this->end());
+		memcpy(ret.data(),this->data(),this->size());
 	}
 	if (a.size())
 	{
-		ret.insert(ret.end(), a.begin(), a.end());
+		memcpy(ret.data() + this->size(), a.data(), a.size());
 	}
+
 	return ret;
 }
 

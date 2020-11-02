@@ -30,22 +30,22 @@ namespace EazyLib {
 			//MODE_OFB,	//输出反馈模式
 			MODE_CTR	//计算器模式
 		};
-		enum AESBlockSize_t
+		enum AESKeySize_t
 		{
-			AES_128 = 16,
-			AES_192 = 24,
-			AES_256 = 32
+			AES_128,
+			AES_192,
+			AES_256
 		};
 
 
-		AESCryptoHelper(AESMode_t cryptmode = AESMode_t::MODE_ECB, AESBlockSize_t blocksize = AESBlockSize_t::AES_128, PaddingMode_t padmode = PaddingMode_t::pkcs5_padding);
+		AESCryptoHelper(AESMode_t cryptmode = AESMode_t::MODE_ECB, AESKeySize_t keySize = AESKeySize_t::AES_128, PaddingMode_t padmode = PaddingMode_t::pkcs5_padding);
 		~AESCryptoHelper();
 		字节集 Encrypt(字节集 加密数据, 字节集 密钥, 字节集 向量 = {});
 		字节集 Decrypt(字节集 解密数据, 字节集 密钥, 字节集 向量 = {});
 	public:
 		//加密模式一旦确认不可更改
 		const AESMode_t m_AESMode;
-		const AESBlockSize_t m_AESBlockSize;
+		const AESKeySize_t m_AESKeySize;		//密钥的长度
 		const PaddingMode_t m_PaddingMode;
 
 	private:
@@ -67,6 +67,8 @@ namespace EazyLib {
 
 		void AES_ECB_Encrypt(字节集& 加密数据, 字节集& 加密结果);
 		void AES_ECB_Decrypt(字节集& 解密数据, 字节集& 解密结果);
+		void AES_CBC_Encrypt(字节集& 加密数据, 字节集& 加密结果);
+		void AES_CBC_Decrypt(字节集& 解密数据, 字节集& 解密结果);
 	private:
 		unsigned int Nk = 0;
 

@@ -55,6 +55,14 @@ unsigned char Multiply(unsigned char x, unsigned char y)
 		((y >> 4 & 1) * xtime(xtime(xtime(xtime(x)))))); /* this last call to xtime() can be omitted */
 }
 
+void XorWithIv(unsigned char* Buf,unsigned char* Iv)
+{
+	for (unsigned int i = 0; i < 16; ++i)
+	{
+		Buf[i] ^= Iv[i];
+	}
+}
+
 // This function adds the round key to state.
 // The round key is added to the state by an XOR function.
 void EazyLib::AESCryptoHelper::AddRoundKey(unsigned char round, unsigned char* state)
@@ -207,19 +215,19 @@ void EazyLib::AESCryptoHelper::InvCipher(unsigned char* state)
 	AddRoundKey(0, state);
 }
 
-EazyLib::AESCryptoHelper::AESCryptoHelper(AESMode_t cryptmode,AESBlockSize_t blocksize,PaddingMode_t padmode):m_AESMode(cryptmode),m_AESBlockSize(blocksize),m_PaddingMode(padmode)
+EazyLib::AESCryptoHelper::AESCryptoHelper(AESMode_t cryptmode, AESKeySize_t keySize, PaddingMode_t padmode) :m_AESKeySize(keySize), m_AESMode(cryptmode), m_PaddingMode(padmode)
 {
-	switch (m_AESBlockSize)
+	switch (keySize)
 	{
-	case AESCryptoHelper::AESBlockSize_t::AES_128:
+	case AESCryptoHelper::AESKeySize_t::AES_128:
 		Nk = 4;
 		Nr = 10;
 		break;
-	case AESCryptoHelper::AESBlockSize_t::AES_192:
+	case AESCryptoHelper::AESKeySize_t::AES_192:
 		Nk = 6;
 		Nr = 12;
 		break;
-	case AESCryptoHelper::AESBlockSize_t::AES_256:
+	case AESCryptoHelper::AESKeySize_t::AES_256:
 		Nk = 8;
 		Nr = 14;
 		break;
@@ -241,13 +249,13 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 	switch (m_PaddingMode)
 	{
 	case PaddingMode_t::no_padding:
-		if (!CheckNoPadding(¼ÓÃÜÊý¾Ý.size(), (unsigned int)m_AESBlockSize))
+		if (!CheckNoPadding(¼ÓÃÜÊý¾Ý.size(), 16))
 		{
 			return {};
 		}
 		break;
 	case PaddingMode_t::zero_padding:
-		appendZeroPadding(¼ÓÃÜÊý¾Ý, (unsigned int)m_AESBlockSize);
+		appendZeroPadding(¼ÓÃÜÊý¾Ý, 16);
 		break;
 	default:
 		break;
@@ -261,6 +269,7 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 		AES_ECB_Encrypt(¼ÓÃÜÊý¾Ý, ¼ÓÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CBC:
+		AES_CBC_Encrypt(¼ÓÃÜÊý¾Ý, ¼ÓÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
 		break;
@@ -284,6 +293,7 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 		AES_ECB_Decrypt(½âÃÜÊý¾Ý, ½âÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CBC:
+		AES_CBC_Decrypt(½âÃÜÊý¾Ý, ½âÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
 		break;
@@ -296,7 +306,7 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 	case PaddingMode_t::no_padding:
 		break;
 	case PaddingMode_t::zero_padding:
-		removeZeroPadding(½âÃÜ½á¹û, (unsigned int)m_AESBlockSize);
+		removeZeroPadding(½âÃÜ½á¹û, 16);
 		break;
 	default:
 		break;
@@ -309,7 +319,6 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 
 void EazyLib::AESCryptoHelper::AES_ECB_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊý¾Ý, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
 {
-	//Block¼ÓÃÜÂÖÊý
 	for (unsigned int n = 0; n < ¼ÓÃÜÊý¾Ý.size() / 16; n++)
 	{
 		Cipher(¼ÓÃÜÊý¾Ý.data() + n * 16);
@@ -319,11 +328,42 @@ void EazyLib::AESCryptoHelper::AES_ECB_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊý¾Ý, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹
 
 void EazyLib::AESCryptoHelper::AES_ECB_Decrypt(×Ö½Ú¼¯& ½âÃÜÊý¾Ý, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
 {
-	//Block¼ÓÃÜÂÖÊý
 	for (unsigned int n = 0; n < ½âÃÜÊý¾Ý.size() / 16; n++)
 	{
 		InvCipher(½âÃÜÊý¾Ý.data() + n * 16);
 	}
+	½âÃÜ½á¹û = ½âÃÜÊý¾Ý;
+}
+
+void EazyLib::AESCryptoHelper::AES_CBC_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊý¾Ý, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
+{
+	unsigned char* pBuf = ¼ÓÃÜÊý¾Ý.data();
+	unsigned char* pIv = Iv;
+
+	for (unsigned int n = 0; n < ¼ÓÃÜÊý¾Ý.size() / 16; n++)
+	{
+		XorWithIv(pBuf, pIv);
+		Cipher(pBuf);
+		pIv = pBuf;
+		pBuf += 16;
+	}
+	¼ÓÃÜ½á¹û = ¼ÓÃÜÊý¾Ý;
+}
+
+void EazyLib::AESCryptoHelper::AES_CBC_Decrypt(×Ö½Ú¼¯& ½âÃÜÊý¾Ý, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
+{
+	unsigned char storeIv[16];
+
+	unsigned char* pBuf = ½âÃÜÊý¾Ý.data();
+	for (unsigned int n = 0; n < ½âÃÜÊý¾Ý.size() / 16; n++)
+	{
+		memcpy(storeIv, pBuf, 16);
+		InvCipher(pBuf);
+		XorWithIv(pBuf, Iv);
+		memcpy(Iv, storeIv, 16);
+		pBuf += 16;
+	}
+
 	½âÃÜ½á¹û = ½âÃÜÊý¾Ý;
 }
 
@@ -333,21 +373,21 @@ void EazyLib::AESCryptoHelper::SetKey(×Ö½Ú¼¯& key)
 	//AES192,ÃÜÔ¿³¤¶È24×Ö½Ú
 	//AES256,ÃÜÔ¿³¤¶È32×Ö½Ú
 
-	switch (m_AESBlockSize)
+	switch (m_AESKeySize)
 	{
-	case AESCryptoHelper::AESBlockSize_t::AES_128:
+	case AESCryptoHelper::AESKeySize_t::AES_128:
 		if (key.size() < 16)
 		{
 			key.resize(16, 0x0);
 		}
 		break;
-	case AESCryptoHelper::AESBlockSize_t::AES_192:
+	case AESCryptoHelper::AESKeySize_t::AES_192:
 		if (key.size() < 24)
 		{
 			key.resize(24, 0x0);
 		}
 		break;
-	case AESCryptoHelper::AESBlockSize_t::AES_256:
+	case AESCryptoHelper::AESKeySize_t::AES_256:
 		if (key.size() < 32)
 		{
 			key.resize(32, 0x0);
@@ -450,7 +490,7 @@ void EazyLib::AESCryptoHelper::KeyExpansion(unsigned char* RoundKey, unsigned ch
 
 			tempa[0] = tempa[0] ^ Rcon[i / Nk];
 		}
-		else if (m_AESBlockSize == AESBlockSize_t::AES_256 && i % Nk == 4)
+		else if (m_AESKeySize == AESKeySize_t::AES_256 && i % Nk == 4)
 		{
 			// Function Subword()
 			{
