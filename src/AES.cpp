@@ -246,23 +246,12 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 	SetKey(ÃÜÔ¿);
 	SetIv(ÏòÁ¿);
 
-	switch (m_PaddingMode)
+	×Ö½Ú¼¯ ¼ÓÃÜ½á¹û;
+	if (!AppendPadding(¼ÓÃÜÊı¾İ))
 	{
-	case PaddingMode_t::no_padding:
-		if (!CheckNoPadding(¼ÓÃÜÊı¾İ.size(), 16))
-		{
-			return {};
-		}
-		break;
-	case PaddingMode_t::zero_padding:
-		appendZeroPadding(¼ÓÃÜÊı¾İ, 16);
-		break;
-	default:
-		break;
+		return ¼ÓÃÜ½á¹û;
 	}
 
-
-	×Ö½Ú¼¯ ¼ÓÃÜ½á¹û;
 	switch (m_AESMode)
 	{
 	case AESCryptoHelper::AESMode_t::MODE_ECB:
@@ -272,14 +261,15 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 		AES_CBC_Encrypt(¼ÓÃÜÊı¾İ, ¼ÓÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
+		AES_CTR_Encrypt(¼ÓÃÜÊı¾İ, ¼ÓÃÜ½á¹û);
 		break;
 	default:
 		break;
 	}
 
-
 	return ¼ÓÃÜ½á¹û;
 }
+
 
 ×Ö½Ú¼¯ EazyLib::AESCryptoHelper::Decrypt(×Ö½Ú¼¯ ½âÃÜÊı¾İ, ×Ö½Ú¼¯ ÃÜÔ¿, ×Ö½Ú¼¯ ÏòÁ¿)
 {
@@ -296,22 +286,14 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 		AES_CBC_Decrypt(½âÃÜÊı¾İ, ½âÃÜ½á¹û);
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
+		AES_CTR_Decrypt(½âÃÜÊı¾İ, ½âÃÜ½á¹û);
 		break;
 	default:
 		break;
 	}
 
-	switch (m_PaddingMode)
-	{
-	case PaddingMode_t::no_padding:
-		break;
-	case PaddingMode_t::zero_padding:
-		removeZeroPadding(½âÃÜ½á¹û, 16);
-		break;
-	default:
-		break;
-	}
 
+	RemovePadding(½âÃÜ½á¹û);
 	return ½âÃÜ½á¹û;
 }
 
@@ -367,6 +349,72 @@ void EazyLib::AESCryptoHelper::AES_CBC_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹
 	½âÃÜ½á¹û = ½âÃÜÊı¾İ;
 }
 
+void EazyLib::AESCryptoHelper::AES_CTR_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊı¾İ, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
+{
+	unsigned char buffer[16];
+
+	unsigned i;
+	int bi;
+	for (i = 0, bi = 16; i < ¼ÓÃÜÊı¾İ.size(); ++i, ++bi)
+	{
+		if (bi == 16) /* we need to regen xor compliment in buffer */
+		{
+			memcpy(buffer, Iv, 16);
+			Cipher(buffer);
+
+			/* Increment Iv and handle overflow */
+			for (bi = (16 - 1); bi >= 0; --bi)
+			{
+				/* inc will overflow */
+				if (Iv[bi] == 255)
+				{
+					Iv[bi] = 0;
+					continue;
+				}
+				Iv[bi] += 1;
+				break;
+			}
+			bi = 0;
+		}
+		¼ÓÃÜÊı¾İ[i] = (¼ÓÃÜÊı¾İ[i] ^ buffer[bi]);
+	}
+
+	¼ÓÃÜ½á¹û = ¼ÓÃÜÊı¾İ;
+}
+
+void EazyLib::AESCryptoHelper::AES_CTR_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
+{
+	unsigned char buffer[16];
+
+	unsigned i;
+	int bi;
+	for (i = 0, bi = 16; i < ½âÃÜÊı¾İ.size(); ++i, ++bi)
+	{
+		if (bi == 16) /* we need to regen xor compliment in buffer */
+		{
+			memcpy(buffer, Iv, 16);
+			Cipher(buffer);
+
+			/* Increment Iv and handle overflow */
+			for (bi = (16 - 1); bi >= 0; --bi)
+			{
+				/* inc will overflow */
+				if (Iv[bi] == 255)
+				{
+					Iv[bi] = 0;
+					continue;
+				}
+				Iv[bi] += 1;
+				break;
+			}
+			bi = 0;
+		}
+		½âÃÜÊı¾İ[i] = (½âÃÜÊı¾İ[i] ^ buffer[bi]);
+	}
+
+	½âÃÜ½á¹û = ½âÃÜÊı¾İ;
+}
+
 void EazyLib::AESCryptoHelper::SetKey(×Ö½Ú¼¯& key)
 {
 	//AES128,ÃÜÔ¿³¤¶È16×Ö½Ú
@@ -406,8 +454,6 @@ void EazyLib::AESCryptoHelper::SetIv(×Ö½Ú¼¯& ÏòÁ¿)
 	{
 	case AESCryptoHelper::AESMode_t::MODE_ECB:
 		return;
-	case AESCryptoHelper::AESMode_t::MODE_CTR:
-		return;
 	default:
 		break;
 	}
@@ -417,6 +463,52 @@ void EazyLib::AESCryptoHelper::SetIv(×Ö½Ú¼¯& ÏòÁ¿)
 		ÏòÁ¿.resize(16, 0x0);
 	}
 	memcpy(Iv, ÏòÁ¿.data(), 16);
+}
+
+bool EazyLib::AESCryptoHelper::AppendPadding(×Ö½Ú¼¯& Êı¾İ)
+{
+	//CTRÄ£Ê½Ö§³ÖÈÎÒâ³¤¶È¼ÓÃÜ,²»ĞèÒªPadding
+	if (m_AESMode == MODE_CTR)
+	{
+		return true;
+	}
+
+	switch (m_PaddingMode)
+	{
+	case PaddingMode_t::no_padding:
+		if (!CheckNoPadding(Êı¾İ.size(), 16))
+		{
+			return false;
+		}
+		break;
+	case PaddingMode_t::zero_padding:
+		appendZeroPadding(Êı¾İ, 16);
+		break;
+	default:
+		break;
+	}
+
+
+	return true;
+}
+
+void EazyLib::AESCryptoHelper::RemovePadding(×Ö½Ú¼¯& Êı¾İ)
+{
+	if (m_AESMode == MODE_CTR)
+	{
+		return;
+	}
+
+	switch (m_PaddingMode)
+	{
+	case PaddingMode_t::no_padding:
+		break;
+	case PaddingMode_t::zero_padding:
+		removeZeroPadding(Êı¾İ, 16);
+		break;
+	default:
+		break;
+	}
 }
 
 void EazyLib::AESCryptoHelper::KeyExpansion(unsigned char* RoundKey, unsigned char* Key)

@@ -51,6 +51,9 @@ namespace EazyLib {
 	private:
 		void SetKey(字节集& key);
 		void SetIv(字节集& 向量);
+		bool AppendPadding(字节集& 数据);
+		void RemovePadding(字节集& 数据);
+
 		void KeyExpansion(unsigned char* RoundKey, unsigned char* Key);
 
 
@@ -69,6 +72,8 @@ namespace EazyLib {
 		void AES_ECB_Decrypt(字节集& 解密数据, 字节集& 解密结果);
 		void AES_CBC_Encrypt(字节集& 加密数据, 字节集& 加密结果);
 		void AES_CBC_Decrypt(字节集& 解密数据, 字节集& 解密结果);
+		void AES_CTR_Encrypt(字节集& 加密数据, 字节集& 加密结果);
+		void AES_CTR_Decrypt(字节集& 解密数据, 字节集& 解密结果);
 	private:
 		unsigned int Nk = 0;
 
