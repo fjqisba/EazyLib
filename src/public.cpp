@@ -1,4 +1,5 @@
 #include "../public.h"
+#include "EazyLib.h"
 
 const char* UCharToStr(unsigned char c)
 {
@@ -42,4 +43,33 @@ unsigned char StrToUchar(const char* pStr)
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	return BinMap[pStr[0]] * 16 + BinMap[pStr[1]];
+}
+
+
+unsigned int EazyLib::—≠ª∑◊Û“∆(unsigned int value, int shift)
+{
+	int max_bits = sizeof(unsigned int) << 3;
+	if (shift < 0)
+	{
+		return —≠ª∑”““∆(value, -shift);
+	}
+	if (shift > max_bits)
+	{
+		shift = shift % max_bits;
+	}
+	return (value << shift) | (value >> (max_bits - shift));
+}
+
+unsigned int EazyLib::—≠ª∑”““∆(unsigned int value, int shift)
+{
+	int max_bits = sizeof(unsigned int) << 3;
+	if (shift < 0)
+	{
+		return —≠ª∑◊Û“∆(value, -shift);
+	}
+	if (shift > max_bits)
+	{
+		shift = shift % max_bits;
+	}
+	return (value >> shift) | (value << (max_bits - shift));
 }

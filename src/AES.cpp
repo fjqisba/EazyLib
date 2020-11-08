@@ -1,6 +1,11 @@
 #include "EazyLib.h"
 #include "Padding.h"
 
+
+//²Î¿¼×ÊÁÏ:https://zh.wikipedia.org/wiki/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F#%E5%B8%B8%E7%94%A8%E6%A8%A1%E5%BC%8F
+//²Î¿¼×ÊÁÏ:https://www.cryptopp.com/wiki/Advanced_Encryption_Standard
+//²Î¿¼×ÊÁÏ:https://github.com/kokke/tiny-AES-c
+
 const unsigned char Sbox[256] =
 { /*  0    1    2    3    4    5    6    7    8    9    a    b    c    d    e    f */
 	0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76, /*0*/
@@ -215,25 +220,9 @@ void EazyLib::AESCryptoHelper::InvCipher(unsigned char* state)
 	AddRoundKey(0, state);
 }
 
-EazyLib::AESCryptoHelper::AESCryptoHelper(AESMode_t cryptmode, AESKeySize_t keySize, PaddingMode_t padmode) :m_AESKeySize(keySize), m_AESMode(cryptmode), m_PaddingMode(padmode)
+EazyLib::AESCryptoHelper::AESCryptoHelper(AESMode_t cryptmode, PaddingMode_t padmode) : m_AESMode(cryptmode), m_PaddingMode(padmode)
 {
-	switch (keySize)
-	{
-	case AESCryptoHelper::AESKeySize_t::AES_128:
-		Nk = 4;
-		Nr = 10;
-		break;
-	case AESCryptoHelper::AESKeySize_t::AES_192:
-		Nk = 6;
-		Nr = 12;
-		break;
-	case AESCryptoHelper::AESKeySize_t::AES_256:
-		Nk = 8;
-		Nr = 14;
-		break;
-	default:
-		break;
-	}
+
 }
 
 EazyLib::AESCryptoHelper::~AESCryptoHelper()
@@ -263,6 +252,12 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
 		AES_CTR_Encrypt(¼ÓÃÜÊı¾İ, ¼ÓÃÜ½á¹û);
 		break;
+	case AESCryptoHelper::AESMode_t::MODE_CFB:
+		AES_CFB_Encrypt(¼ÓÃÜÊı¾İ, ¼ÓÃÜ½á¹û);
+		break;
+	case AESCryptoHelper::AESMode_t::MODE_OFB:
+		AES_OFB_Encrypt(¼ÓÃÜÊı¾İ, ¼ÓÃÜ½á¹û);
+		break;
 	default:
 		break;
 	}
@@ -287,6 +282,12 @@ EazyLib::AESCryptoHelper::~AESCryptoHelper()
 		break;
 	case AESCryptoHelper::AESMode_t::MODE_CTR:
 		AES_CTR_Decrypt(½âÃÜÊı¾İ, ½âÃÜ½á¹û);
+		break;
+	case AESCryptoHelper::AESMode_t::MODE_CFB:
+		AES_CFB_Decrypt(½âÃÜÊı¾İ, ½âÃÜ½á¹û);
+		break;
+	case AESCryptoHelper::AESMode_t::MODE_OFB:
+		AES_OFB_Decrypt(½âÃÜÊı¾İ, ½âÃÜ½á¹û);
 		break;
 	default:
 		break;
@@ -319,6 +320,7 @@ void EazyLib::AESCryptoHelper::AES_ECB_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹
 
 void EazyLib::AESCryptoHelper::AES_CBC_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊı¾İ, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
 {
+
 	unsigned char* pBuf = ¼ÓÃÜÊı¾İ.data();
 	unsigned char* pIv = Iv;
 
@@ -382,6 +384,102 @@ void EazyLib::AESCryptoHelper::AES_CTR_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊı¾İ, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹
 	¼ÓÃÜ½á¹û = ¼ÓÃÜÊı¾İ;
 }
 
+void EazyLib::AESCryptoHelper::AES_CFB_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊı¾İ, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
+{
+	//Initialization vector
+	unsigned char CIv[16];
+	memcpy(CIv, Iv, 16);
+	Cipher(CIv);
+
+	unsigned char* Ciphertext = ¼ÓÃÜÊı¾İ.data();
+	unsigned int bi = 0;
+	for (unsigned int n = 0; n < ¼ÓÃÜÊı¾İ.size(); ++n)
+	{
+		Ciphertext[bi] ^=  CIv[bi];
+		bi++;
+		if (bi == 16)
+		{
+			memcpy(CIv, Ciphertext, 16);
+			Ciphertext += 16;
+			Cipher(CIv);
+			bi = 0;
+		}
+	}
+
+	¼ÓÃÜ½á¹û = ¼ÓÃÜÊı¾İ;
+}
+
+void EazyLib::AESCryptoHelper::AES_OFB_Encrypt(×Ö½Ú¼¯& ¼ÓÃÜÊı¾İ, ×Ö½Ú¼¯& ¼ÓÃÜ½á¹û)
+{
+	//Initialization vector
+	Cipher(Iv);
+
+	unsigned char* Ciphertext = ¼ÓÃÜÊı¾İ.data();
+	unsigned int bi = 0;
+	for (unsigned int n = 0; n < ¼ÓÃÜÊı¾İ.size(); ++n)
+	{
+		Ciphertext[bi] ^= Iv[bi];
+		bi++;
+		if (bi == 16)
+		{
+			Ciphertext += 16;
+			Cipher(Iv);
+			bi = 0;
+		}
+	}
+
+	¼ÓÃÜ½á¹û = ¼ÓÃÜÊı¾İ;
+}
+
+void EazyLib::AESCryptoHelper::AES_OFB_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
+{
+	//Initialization vector
+	Cipher(Iv);
+
+	unsigned char* Plaintext = ½âÃÜÊı¾İ.data();
+	unsigned int bi = 0;
+	for (unsigned int n = 0; n < ½âÃÜÊı¾İ.size(); ++n)
+	{
+		Plaintext[bi] ^= Iv[bi];
+		bi++;
+		if (bi == 16)
+		{
+			Plaintext += 16;
+			Cipher(Iv);
+			bi = 0;
+		}
+	}
+
+	½âÃÜ½á¹û = ½âÃÜÊı¾İ;
+}
+
+void EazyLib::AESCryptoHelper::AES_CFB_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
+{
+	½âÃÜ½á¹û.resize(½âÃÜÊı¾İ.size());
+
+	//Initialization vector
+	unsigned char* CIv = Iv;
+	Cipher(CIv);
+
+	unsigned char* Ciphertext = ½âÃÜÊı¾İ.data();
+	unsigned char* Plaintext = ½âÃÜ½á¹û.data();
+
+	unsigned int bi = 0;
+	for (unsigned int n = 0; n < ½âÃÜÊı¾İ.size(); ++n)
+	{
+		Plaintext[bi] = Ciphertext[bi] ^ CIv[bi];
+		bi++;
+		if (bi == 16)
+		{
+			CIv = Ciphertext;
+			Cipher(CIv);
+			Ciphertext += 16;
+			Plaintext += 16;
+			bi = 0;
+		}
+	}
+}
+
 void EazyLib::AESCryptoHelper::AES_CTR_Decrypt(×Ö½Ú¼¯& ½âÃÜÊı¾İ, ×Ö½Ú¼¯& ½âÃÜ½á¹û)
 {
 	unsigned char buffer[16];
@@ -421,41 +519,37 @@ void EazyLib::AESCryptoHelper::SetKey(×Ö½Ú¼¯& key)
 	//AES192,ÃÜÔ¿³¤¶È24×Ö½Ú
 	//AES256,ÃÜÔ¿³¤¶È32×Ö½Ú
 
-	switch (m_AESKeySize)
+	switch (key.size())
 	{
-	case AESCryptoHelper::AESKeySize_t::AES_128:
-		if (key.size() < 16)
-		{
-			key.resize(16, 0x0);
-		}
+	case 16:
+		Nk = 4;
+		Nr = 10;
 		break;
-	case AESCryptoHelper::AESKeySize_t::AES_192:
-		if (key.size() < 24)
-		{
-			key.resize(24, 0x0);
-		}
+	case 24:
+		Nk = 6;
+		Nr = 12;
 		break;
-	case AESCryptoHelper::AESKeySize_t::AES_256:
-		if (key.size() < 32)
-		{
-			key.resize(32, 0x0);
-		}
+	case 32:
+		Nk = 8;
+		Nr = 14;
 		break;
 	default:
+		//Ä¬ÈÏAES256¼ÓÃÜ°É
+		key.resize(32, 0x0);
+		Nk = 8;
+		Nr = 14;
 		break;
 	}
+
 	KeyExpansion(RoundKey, key.data());
 }
 
 void EazyLib::AESCryptoHelper::SetIv(×Ö½Ú¼¯& ÏòÁ¿)
 {
-	//ECBºÍCTRÄ£Ê½ºöÂÔIV
-	switch (m_AESMode)
+	//ECBÄ£Ê½ºöÂÔIV
+	if (m_AESMode == AESCryptoHelper::AESMode_t::MODE_ECB)
 	{
-	case AESCryptoHelper::AESMode_t::MODE_ECB:
 		return;
-	default:
-		break;
 	}
 
 	if (ÏòÁ¿.size() < 16)
@@ -467,44 +561,37 @@ void EazyLib::AESCryptoHelper::SetIv(×Ö½Ú¼¯& ÏòÁ¿)
 
 bool EazyLib::AESCryptoHelper::AppendPadding(×Ö½Ú¼¯& Êı¾İ)
 {
-	//CTRÄ£Ê½Ö§³ÖÈÎÒâ³¤¶È¼ÓÃÜ,²»ĞèÒªPadding
-	if (m_AESMode == MODE_CTR)
-	{
-		return true;
-	}
-
 	switch (m_PaddingMode)
 	{
 	case PaddingMode_t::no_padding:
-		if (!CheckNoPadding(Êı¾İ.size(), 16))
-		{
-			return false;
-		}
 		break;
 	case PaddingMode_t::zero_padding:
 		appendZeroPadding(Êı¾İ, 16);
 		break;
+	case PaddingMode_t::pkcs5_padding:
+	case PaddingMode_t::pkcs7_padding:
+		//¶ÔÓÚAESËã·¨À´Ëµ,pkcs5Óëpkcs7ÎŞÇø±ğ
+		appendPkcs7Padding(Êı¾İ, 16);
+		break;
 	default:
 		break;
 	}
-
 
 	return true;
 }
 
 void EazyLib::AESCryptoHelper::RemovePadding(×Ö½Ú¼¯& Êı¾İ)
 {
-	if (m_AESMode == MODE_CTR)
-	{
-		return;
-	}
-
 	switch (m_PaddingMode)
 	{
 	case PaddingMode_t::no_padding:
 		break;
 	case PaddingMode_t::zero_padding:
 		removeZeroPadding(Êı¾İ, 16);
+		break;
+	case PaddingMode_t::pkcs5_padding:
+	case PaddingMode_t::pkcs7_padding:
+		removePkcs7Padding(Êı¾İ, 16);
 		break;
 	default:
 		break;
@@ -582,7 +669,7 @@ void EazyLib::AESCryptoHelper::KeyExpansion(unsigned char* RoundKey, unsigned ch
 
 			tempa[0] = tempa[0] ^ Rcon[i / Nk];
 		}
-		else if (m_AESKeySize == AESKeySize_t::AES_256 && i % Nk == 4)
+		else if ((Nk == 8) && (i % Nk == 4))
 		{
 			// Function Subword()
 			{

@@ -40,3 +40,19 @@ void removeZeroPadding(字节集& Data, unsigned int BlockSize)
 	}
 	Data.resize(Data.size() - unpadLen);
 }
+
+void appendPkcs7Padding(字节集& Data, unsigned int BlockSize)
+{
+	unsigned char padNum = paddingLength(Data.size(), BlockSize);
+	Data.resize(Data.size() + padNum, padNum);
+}
+
+void removePkcs7Padding(字节集& Data, unsigned int BlockSize)
+{
+	if (Data.size() < BlockSize || !Data.size())
+	{
+		return;
+	}
+
+	Data.resize(Data.size() - Data.back());
+}
