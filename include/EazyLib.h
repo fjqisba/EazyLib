@@ -11,6 +11,9 @@ namespace EazyLib {
 	unsigned int 循环左移(unsigned int value, int shift);
 	unsigned int 循环右移(unsigned int value, int shift);
 	
+	std::string BASE64编码(字节集 编码数据);
+	字节集 BASE64解码(std::string 文本);
+
 	//不能和Windows.h里面的宏定义冲突,只能用小写的名称了...
 	enum PaddingMode_t
 	{

@@ -277,6 +277,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AES.cpp" />
+    <ClCompile Include="src\Base64.cpp" />
     <ClCompile Include="src\EazyLib.cpp" />
     <ClCompile Include="src\Padding.cpp" />
     <ClCompile Include="src\public.cpp" />
