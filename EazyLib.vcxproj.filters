@@ -51,6 +51,9 @@
     <ClCompile Include="src\Base64.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\SHA256.cpp">
+      <Filter>源文件\Crypto</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\窗口.h">

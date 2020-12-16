@@ -281,6 +281,7 @@
     <ClCompile Include="src\EazyLib.cpp" />
     <ClCompile Include="src\Padding.cpp" />
     <ClCompile Include="src\public.cpp" />
+    <ClCompile Include="src\SHA256.cpp" />
     <ClCompile Include="src\内存.cpp" />
     <ClCompile Include="src\字节集.cpp" />
     <ClCompile Include="src\文本.cpp" />

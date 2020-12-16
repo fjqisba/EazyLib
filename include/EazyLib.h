@@ -14,6 +14,8 @@ namespace EazyLib {
 	std::string BASE64编码(字节集 编码数据);
 	字节集 BASE64解码(std::string 文本);
 
+	字节集 哈希_SHA256(字节集 数据);
+
 	//不能和Windows.h里面的宏定义冲突,只能用小写的名称了...
 	enum PaddingMode_t
 	{
@@ -23,6 +25,8 @@ namespace EazyLib {
 		pkcs7_padding,		//填充字节等于Block缺少的字节个数,Block范围为0x1-0xFF
 		//ISO10126_PADDING
 	};
+
+
 
 	class AESCryptoHelper
 	{

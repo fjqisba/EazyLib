@@ -6,8 +6,10 @@ using namespace EazyLib;
 #include <windows.h>
 int main()
 {
-	std::string test = BASE64编码({ 0x5,0x6,0x77 });
-	字节集 ret = BASE64解码(test);
+	字节集 test = {0x31};
+
+
+	字节集 ret = 哈希_SHA256(test);
 
 	int a = 0;
 	return true;
