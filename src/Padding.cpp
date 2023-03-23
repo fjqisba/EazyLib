@@ -17,7 +17,7 @@ bool CheckNoPadding(unsigned int DataLen, unsigned int BlockSize)
 void appendZeroPadding(×Ö½Ú¼¯& Data, unsigned int BlockSize)
 {
 	unsigned int padLen = paddingLength(Data.size(), BlockSize);
-	Data.resize(Data.size() + padLen, 0x0);
+	Data.resize(Data.size() + padLen, 0x20);
 	return;
 }
 
